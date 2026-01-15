@@ -1,65 +1,480 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { Player, Position, UserRoster } from "@/types";
+import { getRandomPlayer } from "@/data/players";
+import { checkChampionship } from "@/data/championships";
+import PlayerCard from "@/components/PlayerCard";
+import GachaModal from "@/components/GachaModal";
+import ChampionshipCelebration from "@/components/ChampionshipCelebration";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { generateShareURL, copyToClipboard } from "@/lib/roster-share";
+import {
+  saveToCommunity,
+  getUserName,
+  saveUserName,
+} from "@/lib/community-storage";
+
+const POSITIONS: Position[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
 export default function Home() {
+  const [roster, setRoster] = useState<UserRoster>({
+    id: "",
+    createdAt: Date.now(),
+  });
+
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(
+    null
+  );
+  const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
+  const [isGachaOpen, setIsGachaOpen] = useState(false);
+  const [isChampionshipOpen, setIsChampionshipOpen] = useState(false);
+  const [isSummoningAll, setIsSummoningAll] = useState(false);
+  const [pendingPositions, setPendingPositions] = useState<Position[]>([]);
+  const [shareMessage, setShareMessage] = useState("");
+  const [isCommunityModalOpen, setIsCommunityModalOpen] = useState(false);
+  const [communityUserName, setCommunityUserName] = useState("");
+  const [communityMessage, setCommunityMessage] = useState("");
+
+  // Load saved username on mount
+  useEffect(() => {
+    const savedName = getUserName();
+    if (savedName) {
+      setCommunityUserName(savedName);
+    }
+  }, []);
+
+  // Check for championship when roster is complete
+  useEffect(() => {
+    const positions: Position[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
+    const isComplete = positions.every(
+      (pos) => roster[pos.toLowerCase() as keyof UserRoster]
+    );
+
+    if (isComplete) {
+      // Check if this is a championship roster
+      const players = positions.map(
+        (pos) => roster[pos.toLowerCase() as keyof UserRoster]
+      ) as Player[];
+      const playerNames = players.map((p) => p.name);
+      const team = players[0].teamShort;
+      const year = players[0].year;
+
+      // Check if all players are from same team and year
+      const sameTeamYear = players.every(
+        (p) => p.teamShort === team && p.year === year
+      );
+
+      if (sameTeamYear) {
+        const championship = checkChampionship(playerNames, team, year);
+        if (championship) {
+          setRoster((prev) => ({ ...prev, championship }));
+          // Show championship celebration after a short delay
+          setTimeout(() => {
+            setIsChampionshipOpen(true);
+          }, 1000);
+        }
+      }
+    }
+  }, [roster]);
+
+  const handleSummon = (position: Position) => {
+    setSelectedPosition(position);
+
+    // Get excluded player IDs (already in roster)
+    const excludeIds = POSITIONS.map(
+      (pos) =>
+        roster[pos.toLowerCase() as keyof UserRoster] as Player | undefined
+    )
+      .filter((p): p is Player => p !== undefined)
+      .map((p) => p.id);
+
+    // Get random player
+    const player = getRandomPlayer(position, excludeIds);
+    setCurrentPlayer(player);
+    setIsGachaOpen(true);
+  };
+
+  const handleConfirm = () => {
+    if (currentPlayer && selectedPosition) {
+      setRoster((prev) => ({
+        ...prev,
+        [selectedPosition.toLowerCase()]: currentPlayer,
+      }));
+    }
+    setIsGachaOpen(false);
+    setCurrentPlayer(null);
+    setSelectedPosition(null);
+
+    // If summoning all, continue with next position
+    if (isSummoningAll && pendingPositions.length > 0) {
+      setTimeout(() => {
+        const [nextPosition, ...remaining] = pendingPositions;
+        setPendingPositions(remaining);
+        handleSummon(nextPosition);
+      }, 500);
+    } else {
+      setIsSummoningAll(false);
+      setPendingPositions([]);
+    }
+  };
+
+  const handleCancel = () => {
+    // Reroll - get another player
+    if (selectedPosition) {
+      const excludeIds = POSITIONS.map(
+        (pos) =>
+          roster[pos.toLowerCase() as keyof UserRoster] as Player | undefined
+      )
+        .filter((p): p is Player => p !== undefined)
+        .map((p) => p.id);
+
+      const player = getRandomPlayer(selectedPosition, excludeIds);
+      setCurrentPlayer(player);
+    }
+  };
+
+  const handleReset = () => {
+    setRoster({
+      id: "",
+      createdAt: Date.now(),
+    });
+  };
+
+  const handleSummonAll = () => {
+    // 빈 포지션들 찾기
+    const emptyPositions = POSITIONS.filter(
+      (pos) => !roster[pos.toLowerCase() as keyof UserRoster]
+    );
+
+    if (emptyPositions.length === 0) return;
+
+    // Set state for continuous summoning
+    setIsSummoningAll(true);
+    const [firstPosition, ...remaining] = emptyPositions;
+    setPendingPositions(remaining);
+    handleSummon(firstPosition);
+  };
+
+  const handleShareRoster = async () => {
+    const shareURL = generateShareURL(roster);
+    const success = await copyToClipboard(shareURL);
+
+    if (success) {
+      setShareMessage("✓ Link copied to clipboard!");
+      setTimeout(() => setShareMessage(""), 3000);
+    } else {
+      setShareMessage("✗ Failed to copy link");
+      setTimeout(() => setShareMessage(""), 3000);
+    }
+  };
+
+  const handleOpenCommunityModal = () => {
+    setIsCommunityModalOpen(true);
+    setCommunityMessage("");
+  };
+
+  const handlePostToCommunity = () => {
+    if (!communityUserName.trim()) {
+      setCommunityMessage("✗ Please enter your name");
+      return;
+    }
+
+    // Generate unique ID for roster if not exists
+    if (!roster.id) {
+      setRoster((prev) => ({ ...prev, id: Date.now().toString() }));
+    }
+
+    // Save to community
+    saveToCommunity(roster, communityUserName);
+    saveUserName(communityUserName);
+
+    setCommunityMessage("✓ Posted to community!");
+    setTimeout(() => {
+      setIsCommunityModalOpen(false);
+      setCommunityMessage("");
+    }, 1500);
+  };
+
+  const isRosterComplete = POSITIONS.every(
+    (pos) => roster[pos.toLowerCase() as keyof UserRoster]
+  );
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="min-h-screen hextech-bg hexagon-pattern">
+      {/* Header */}
+      <header className="border-b border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-3"
+          >
+            <img src="/lol.webp" alt="LOL Logo" className="h-8 w-8" />
+            <div>
+              <h1 className="text-2xl font-bold text-lol-gold">
+                League of Gacha
+              </h1>
+              <p className="text-lol-light text-sm">
+                Summon your legendary team
+              </p>
+            </div>
+          </motion.div>
+
+          <div className="flex gap-4">
+            <Link href="/community">
+              <button className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all">
+                Community
+              </button>
+            </Link>
+            {isRosterComplete && (
+              <button
+                onClick={handleReset}
+                className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all"
+              >
+                Reset Roster
+              </button>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 py-12">
+        {/* Title Section */}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Build Your Dream Team
+          </h2>
+          <p className="text-lol-light text-lg">
+            Summon random pro players and see if you can create a championship
+            roster!
+          </p>
+        </motion.div>
+
+        {/* Roster Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8 px-4 py-6">
+          {POSITIONS.map((position, index) => (
+            <motion.div
+              key={position}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="overflow-visible"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              <PlayerCard
+                player={
+                  (roster[
+                    position.toLowerCase() as keyof UserRoster
+                  ] as Player) || null
+                }
+                position={position}
+                onClick={() => handleSummon(position)}
+              />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Global Summon Buttons */}
+        {!isRosterComplete && (
+          <motion.div
+            className="flex flex-col sm:flex-row justify-center gap-4"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            <button
+              onClick={() => {
+                // Find first empty position
+                const emptyPosition = POSITIONS.find(
+                  (pos) => !roster[pos.toLowerCase() as keyof UserRoster]
+                );
+                if (emptyPosition) {
+                  handleSummon(emptyPosition);
+                }
+              }}
+              className="px-8 py-3 rounded-lg font-bold text-lg text-white bg-lol-blue hover:bg-lol-blue-dark transition-all transform hover:scale-105"
             >
-              Learning
-            </a>{" "}
-            center.
+              🎯 Summon One Player
+            </button>
+
+            <button
+              onClick={handleSummonAll}
+              className="px-12 py-4 rounded-lg font-bold text-xl text-black bg-gradient-to-r from-lol-gold to-lol-gold-dark hover:from-lol-gold-dark hover:to-lol-gold transition-all gold-glow transform hover:scale-105"
+            >
+              ⚡ Summon Full Team ⚡
+            </button>
+          </motion.div>
+        )}
+
+        {/* Championship Badge */}
+        {roster.championship && (
+          <motion.div
+            className="mt-12 p-6 rounded-lg bg-gradient-to-r from-yellow-600/20 to-yellow-400/20 border-2 border-yellow-500 champion-glow"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <div className="text-center">
+              <div className="text-4xl mb-2">
+                {roster.championship.type === "winner" ? "🏆" : "🥈"}
+              </div>
+              <div className="text-2xl font-bold text-yellow-400 mb-2">
+                {roster.championship.year} {roster.championship.season || ""}{" "}
+                {roster.championship.league}{" "}
+                {roster.championship.type === "winner"
+                  ? "CHAMPIONS"
+                  : "RUNNERS-UP"}
+                !
+              </div>
+              <div className="text-lol-light">
+                You've assembled the legendary {roster.championship.team}{" "}
+                roster!
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Share and Community Buttons */}
+        {isRosterComplete && (
+          <motion.div
+            className="mt-8 flex flex-col items-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex flex-wrap justify-center gap-4">
+              <button
+                onClick={handleShareRoster}
+                className="px-8 py-3 rounded-lg font-bold text-white bg-lol-blue hover:bg-lol-blue-dark transition-all"
+              >
+                📤 Share Your Roster
+              </button>
+
+              <button
+                onClick={handleOpenCommunityModal}
+                className="px-8 py-3 rounded-lg font-bold text-black bg-gradient-to-r from-lol-gold to-lol-gold-dark hover:from-lol-gold-dark hover:to-lol-gold transition-all gold-glow"
+              >
+                🌟 Post to Community
+              </button>
+            </div>
+
+            {shareMessage && (
+              <motion.div
+                className={`text-sm font-bold ${
+                  shareMessage.startsWith("✓")
+                    ? "text-green-400"
+                    : "text-red-400"
+                }`}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {shareMessage}
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </main>
+
+      {/* Modals */}
+      <GachaModal
+        player={currentPlayer}
+        isOpen={isGachaOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
+
+      <ChampionshipCelebration
+        championship={roster.championship || null}
+        isOpen={isChampionshipOpen}
+        onClose={() => setIsChampionshipOpen(false)}
+      />
+
+      {/* Community Post Modal */}
+      <AnimatePresence>
+        {isCommunityModalOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsCommunityModalOpen(false)}
+          >
+            <motion.div
+              className="bg-lol-dark-accent border-2 border-lol-gold/50 rounded-lg p-8 max-w-md w-full"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-2xl font-bold text-lol-gold mb-4 text-center">
+                Post to Community
+              </h3>
+
+              <p className="text-lol-light text-sm mb-6 text-center">
+                Share your roster with the community!
+              </p>
+
+              <div className="mb-6">
+                <label className="block text-white font-bold mb-2">
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  value={communityUserName}
+                  onChange={(e) => setCommunityUserName(e.target.value)}
+                  placeholder="Enter your summoner name..."
+                  className="w-full px-4 py-3 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-white placeholder-lol-light/50 focus:outline-none focus:border-lol-gold transition-all"
+                  maxLength={30}
+                />
+              </div>
+
+              {communityMessage && (
+                <motion.div
+                  className={`mb-4 text-center font-bold ${
+                    communityMessage.startsWith("✓")
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  {communityMessage}
+                </motion.div>
+              )}
+
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setIsCommunityModalOpen(false)}
+                  className="flex-1 px-6 py-3 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-white hover:border-lol-gold/60 transition-all font-bold"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handlePostToCommunity}
+                  className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-lol-gold to-lol-gold-dark hover:from-lol-gold-dark hover:to-lol-gold text-black font-bold transition-all gold-glow"
+                >
+                  Post
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Footer */}
+      <footer className="mt-20 border-t border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 py-8 text-center text-lol-light text-sm">
+          <p>
+            Made with ⚡ by League of Legends fans | Data includes LCK, LPL,
+            LEC, Worlds, and MSI (2020-2024)
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </footer>
     </div>
   );
 }
