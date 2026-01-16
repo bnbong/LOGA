@@ -1,70 +1,43 @@
-// API 클라이언트 - 서버 API 호출용
+// API 클라이언트 - 클라이언트 사이드에서 직접 데이터 사용
 
 import type { Player, Position } from "@/types";
 import type { CommunityRoster } from "@/lib/community-storage";
+import { getAllPlayers } from "@/data/players";
 
-const API_BASE = "/api";
-
-// 선수 데이터 API
+// 선수 데이터 API - 직접 필터링
 export async function fetchPlayers(filters?: {
   position?: Position;
   isWinner?: boolean;
   year?: number;
-}) {
-  const params = new URLSearchParams();
+}): Promise<{ players: Player[]; count: number }> {
+  let players = getAllPlayers();
 
-  if (filters?.position) params.append("position", filters.position);
-  if (filters?.isWinner !== undefined)
-    params.append("isWinner", String(filters.isWinner));
-  if (filters?.year) params.append("year", String(filters.year));
-
-  const response = await fetch(`${API_BASE}/players?${params}`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch players");
+  // 필터링
+  if (filters?.position) {
+    players = players.filter((p) => p.position === filters.position);
   }
 
-  return response.json() as Promise<{ players: Player[]; count: number }>;
+  if (filters?.isWinner !== undefined) {
+    players = players.filter((p) => p.isWinner === filters.isWinner);
+  }
+
+  if (filters?.year) {
+    players = players.filter((p) => p.year === filters.year);
+  }
+
+  return { players, count: players.length };
 }
 
-// 커뮤니티 로스터 API
+// 커뮤니티 로스터 API - Firebase 직접 사용 (community-storage-v2.ts)
+// 이 함수들은 더 이상 사용되지 않음 - community-storage-v2.ts를 직접 사용하세요
 export async function fetchCommunityRosters() {
-  const response = await fetch(`${API_BASE}/rosters`, {
-    cache: "no-store", // 항상 최신 데이터
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch rosters");
-  }
-
-  return response.json() as Promise<{ rosters: CommunityRoster[] }>;
+  throw new Error("Use community-storage-v2.ts directly");
 }
 
 export async function saveCommunityRoster(roster: CommunityRoster) {
-  const response = await fetch(`${API_BASE}/rosters`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(roster),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to save roster");
-  }
-
-  return response.json();
+  throw new Error("Use community-storage-v2.ts directly");
 }
 
 export async function likeRoster(rosterId: string, userId: string) {
-  const response = await fetch(`${API_BASE}/rosters/${rosterId}/like`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId }),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "Failed to like roster");
-  }
-
-  return response.json();
+  throw new Error("Use community-storage-v2.ts directly");
 }

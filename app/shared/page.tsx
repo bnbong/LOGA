@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Player, Position, UserRoster } from "@/types";
 import { getAllPlayers } from "@/data/players";
@@ -11,7 +11,7 @@ import Link from "next/link";
 
 const POSITIONS: Position[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
-export default function SharedRosterPage() {
+function SharedRosterContent() {
   const searchParams = useSearchParams();
   const [roster, setRoster] = useState<UserRoster | null>(null);
   const [loading, setLoading] = useState(true);
@@ -184,16 +184,20 @@ export default function SharedRosterPage() {
           </Link>
         </motion.div>
       </main>
-
-      {/* Footer */}
-      <footer className="mt-20 border-t border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-8 text-center text-lol-light text-sm">
-          <p>
-            Made with ⚡ by League of Legends fans | Data includes LCK, LPL,
-            LEC, Worlds, and MSI (2013-2025)
-          </p>
-        </div>
-      </footer>
     </div>
+  );
+}
+
+export default function SharedRosterPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen hextech-bg hexagon-pattern flex items-center justify-center">
+          <div className="text-lol-gold text-2xl">Loading...</div>
+        </div>
+      }
+    >
+      <SharedRosterContent />
+    </Suspense>
   );
 }

@@ -72,35 +72,8 @@ export default function CommunityPage() {
 
   return (
     <div className="min-h-screen hextech-bg hexagon-pattern">
-      {/* Header */}
-      <header className="border-b border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
-          <Link href="/">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-3 cursor-pointer"
-            >
-              <img src="/lol.webp" alt="LOL Logo" className="h-8 w-8" />
-              <div>
-                <h1 className="text-2xl font-bold text-lol-gold">
-                  League of Gacha
-                </h1>
-                <p className="text-lol-light text-sm">Community Page</p>
-              </div>
-            </motion.div>
-          </Link>
-
-          <Link href="/">
-            <button className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all">
-              ← Back to Home
-            </button>
-          </Link>
-        </div>
-      </header>
-
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 py-12">
+      <main className="max-w-5xl mx-auto px-4 py-12 mb-20">
         <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
@@ -198,20 +171,20 @@ export default function CommunityPage() {
                       return (
                         <div
                           key={pos}
-                          className="bg-lol-dark-lighter border border-lol-gold/20 rounded-lg p-3 text-center"
+                          className="bg-lol-dark-lighter border border-lol-gold/20 rounded-lg p-2 sm:p-3 text-center"
                         >
-                          <div className="text-xs text-lol-gold font-bold mb-1">
+                          <div className="text-[10px] sm:text-xs text-lol-gold font-bold mb-1 truncate">
                             {pos}
                           </div>
                           {player ? (
                             <>
-                              <div className="text-white font-bold text-sm mb-1">
+                              <div className="text-white font-bold text-xs sm:text-sm mb-1 truncate">
                                 {player.name}
                               </div>
-                              <div className="text-lol-light text-xs">
+                              <div className="text-lol-light text-[10px] sm:text-xs truncate">
                                 {player.teamShort}
                               </div>
-                              <div className="text-lol-light text-xs">
+                              <div className="text-lol-light text-[10px] sm:text-xs">
                                 {player.year}
                               </div>
                             </>
@@ -279,16 +252,6 @@ export default function CommunityPage() {
           </div>
         )}
       </main>
-
-      {/* Footer */}
-      <footer className="mt-20 border-t border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-8 text-center text-lol-light text-sm">
-          <p>
-            Made with ⚡ by League of Legends fans | Data includes LCK, LPL,
-            LEC, Worlds, and MSI (2020-2024)
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

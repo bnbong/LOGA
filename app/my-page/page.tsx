@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import {
   getMyPageStats,
   calculateWinRate,
@@ -82,35 +81,8 @@ export default function MyPage() {
 
   return (
     <div className="min-h-screen hextech-bg hexagon-pattern">
-      {/* Header */}
-      <header className="border-b border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
-          <Link href="/">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-3 cursor-pointer"
-            >
-              <img src="/lol.webp" alt="LOL Logo" className="h-8 w-8" />
-              <div>
-                <h1 className="text-2xl font-bold text-lol-gold">
-                  League of Gacha
-                </h1>
-                <p className="text-lol-light text-sm">My Stats</p>
-              </div>
-            </motion.div>
-          </Link>
-
-          <Link href="/">
-            <button className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all">
-              ← Back to Home
-            </button>
-          </Link>
-        </div>
-      </header>
-
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-12">
+      <main className="max-w-7xl mx-auto px-4 py-12 mb-20">
         {/* Page Title */}
         <motion.div
           className="text-center mb-12"
@@ -247,16 +219,16 @@ export default function MyPage() {
                           className="bg-lol-dark-lighter p-2 rounded-lg"
                         >
                           <div className="flex items-center justify-between mb-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-lol-gold font-bold text-xs">
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <span className="text-lol-gold font-bold text-xs flex-shrink-0">
                                 #{idx + 1}
                               </span>
-                              <span className="text-white text-sm font-bold">
+                              <span className="text-white text-xs sm:text-sm font-bold truncate">
                                 {player.playerName}
                               </span>
                             </div>
                             <span
-                              className="text-xs font-bold px-2 py-0.5 rounded"
+                              className="text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded flex-shrink-0 ml-1"
                               style={{
                                 backgroundColor: player.teamColor + "40",
                                 color: player.teamColor,
@@ -336,23 +308,26 @@ export default function MyPage() {
                   {/* Roster */}
                   <div className="grid grid-cols-5 gap-2">
                     {POSITIONS.map((pos) => {
-                      const player = game.roster[
-                        pos.toLowerCase() as keyof typeof game.roster
-                      ];
+                      const player =
+                        game.roster[
+                          pos.toLowerCase() as keyof typeof game.roster
+                        ];
                       return (
                         <div
                           key={pos}
                           className="bg-lol-dark-lighter border border-lol-gold/20 rounded p-2 text-center"
                         >
-                          <div className="text-xs text-lol-gold font-bold mb-1">
+                          <div className="text-[10px] sm:text-xs text-lol-gold font-bold mb-1 truncate">
                             {pos}
                           </div>
-                          {player && typeof player === "object" ? (
+                          {player &&
+                          typeof player === "object" &&
+                          "name" in player ? (
                             <>
-                              <div className="text-white text-xs font-bold">
+                              <div className="text-white text-[10px] sm:text-xs font-bold truncate">
                                 {player.name}
                               </div>
-                              <div className="text-lol-light text-xs">
+                              <div className="text-lol-light text-[10px] sm:text-xs truncate">
                                 {player.teamShort}
                               </div>
                             </>
@@ -369,16 +344,6 @@ export default function MyPage() {
           )}
         </motion.div>
       </main>
-
-      {/* Footer */}
-      <footer className="mt-20 border-t border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-8 text-center text-lol-light text-sm">
-          <p>
-            Made with ⚡ by League of Legends fans | Stats reset every Monday
-            00:00
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default function PlayerCard({
     return (
       <motion.button
         onClick={onClick}
-        className="relative w-full aspect-[3/4] rounded-lg overflow-hidden cursor-pointer group"
+        className="relative w-full aspect-[3/5] sm:aspect-[3/4] rounded-lg overflow-hidden cursor-pointer group"
         style={{
           background:
             "linear-gradient(135deg, rgba(10, 200, 185, 0.1) 0%, rgba(30, 35, 40, 0.8) 100%)",
@@ -52,7 +52,7 @@ export default function PlayerCard({
   }
 
   return (
-    <div className="relative w-full aspect-[3/4]">
+    <div className="relative w-full aspect-[3/5] sm:aspect-[3/4]">
       {/* Championship indicator - outside card for no clipping */}
       {player.isWinner && player.championshipLeague === "WORLDS" && (
         <div className="absolute -top-3 -right-3 z-20">
@@ -91,7 +91,7 @@ export default function PlayerCard({
         </div>
       )}
       <motion.div
-        className="relative w-full aspect-[3/4] rounded-lg overflow-hidden"
+        className="relative w-full aspect-[3/5] sm:aspect-[3/4] rounded-lg overflow-hidden"
         style={{
           background: `linear-gradient(135deg, ${player.teamColor}40 0%, rgba(30, 35, 40, 0.9) 100%)`,
           border: `2px solid ${player.teamColor}`,
@@ -110,17 +110,17 @@ export default function PlayerCard({
         whileHover={{ scale: 1.05, y: -5 }}
       >
         {/* Player Info */}
-        <div className="absolute inset-0 p-4 flex flex-col justify-between">
+        <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between">
           {/* Top Section */}
           <div>
-            <div className="text-lol-gold font-bold text-xs tracking-wider mb-1">
+            <div className="text-lol-gold font-bold text-[10px] sm:text-xs tracking-wider mb-1">
               {player.position}
             </div>
-            <div className="text-white font-bold text-2xl mb-1 drop-shadow-lg">
+            <div className="text-white font-bold text-xl sm:text-2xl mb-1 drop-shadow-lg truncate">
               {player.name}
             </div>
             {player.realName && (
-              <div className="text-lol-light text-xs mb-2">
+              <div className="text-lol-light text-[10px] sm:text-xs mb-2 truncate">
                 {player.realName}
               </div>
             )}
@@ -130,13 +130,13 @@ export default function PlayerCard({
                 (player.region === "LCK" ||
                   player.region === "LPL" ||
                   player.region === "LEC"))) && (
-              <div className="flex gap-2 mt-4 w-full p-[10px] bg-[#3a3636] opacity-50 rounded-lg items-center">
+              <div className="flex gap-1 sm:gap-2 mt-2 sm:mt-4 w-full p-1.5 sm:p-[10px] bg-[#3a3636] opacity-50 rounded-lg items-center">
                 {player.championshipLeague === "WORLDS" && (
                   <div>
                     <img
                       src="/worlds.svg"
                       alt="Champion Banner"
-                      className="h-10 w-10 mb-2"
+                      className="h-6 w-6 sm:h-10 sm:w-10 mb-1 sm:mb-2"
                     />
                   </div>
                 )}
@@ -145,7 +145,7 @@ export default function PlayerCard({
                     <img
                       src="/lck.svg"
                       alt="Champion Banner"
-                      className="h-10 w-10 mb-2"
+                      className="h-6 w-6 sm:h-10 sm:w-10 mb-1 sm:mb-2"
                     />
                   </div>
                 )}
@@ -154,7 +154,7 @@ export default function PlayerCard({
                     <img
                       src="/lpl.svg"
                       alt="Champion Banner"
-                      className="h-10 w-10 mb-2"
+                      className="h-6 w-6 sm:h-10 sm:w-10 mb-1 sm:mb-2"
                     />
                   </div>
                 )}
@@ -163,7 +163,7 @@ export default function PlayerCard({
                     <img
                       src="/lec.webp"
                       alt="Champion Banner"
-                      className="h-10 w-8 mb-2"
+                      className="h-6 w-5 sm:h-10 sm:w-8 mb-1 sm:mb-2"
                     />
                   </div>
                 )}
@@ -173,7 +173,7 @@ export default function PlayerCard({
                     <img
                       src="/msi.svg"
                       alt="Champion Banner"
-                      className="h-10 w-10 mb-2"
+                      className="h-6 w-6 sm:h-10 sm:w-10 mb-1 sm:mb-2"
                     />
                   </div>
                 )}
@@ -184,18 +184,22 @@ export default function PlayerCard({
           {/* Bottom Section */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">{getFlagEmoji(player.iso)}</span>
-              <span className="text-lol-light text-sm">
+              <span className="text-xl sm:text-2xl">
+                {getFlagEmoji(player.iso)}
+              </span>
+              <span className="text-lol-light text-xs sm:text-sm truncate">
                 {player.nationality}
               </span>
             </div>
             <div
-              className="px-3 py-1 rounded text-white text-sm font-bold"
+              className="px-2 sm:px-3 py-1 rounded text-white text-xs sm:text-sm font-bold truncate"
               style={{ backgroundColor: player.teamColor }}
             >
               {player.teamShort}
             </div>
-            <div className="text-lol-gold text-lg font-bold">{player.year}</div>
+            <div className="text-lol-gold text-base sm:text-lg font-bold">
+              {player.year}
+            </div>
           </div>
         </div>
 

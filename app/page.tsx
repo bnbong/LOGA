@@ -8,7 +8,6 @@ import PlayerCard from "@/components/PlayerCard";
 import GachaModal from "@/components/GachaModal";
 import ChampionshipCelebration from "@/components/ChampionshipCelebration";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import { generateShareURL, copyToClipboard } from "@/lib/roster-share";
 import {
   saveToCommunity,
@@ -217,46 +216,7 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen hextech-bg hexagon-pattern">
-      {/* Header */}
-      <header className="border-b border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3"
-          >
-            <img src="/lol.webp" alt="LOL Logo" className="h-8 w-8" />
-            <div>
-              <h1 className="text-2xl font-bold text-lol-gold">
-                League of Gacha
-              </h1>
-            </div>
-          </motion.div>
-
-          <div className="flex gap-4">
-            <Link href="/my-page">
-              <button className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all">
-                My Stats
-              </button>
-            </Link>
-            <Link href="/community">
-              <button className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all">
-                Community
-              </button>
-            </Link>
-            {isRosterComplete && (
-              <button
-                onClick={handleReset}
-                className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all"
-              >
-                Reset Roster
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen hextech-bg hexagon-pattern mb-20">
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-12">
         {/* Title Section */}
@@ -268,6 +228,16 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-white mb-4">
             Build Your Dream Team
           </h2>
+          {isRosterComplete && (
+            <motion.button
+              onClick={handleReset}
+              className="mt-4 px-6 py-2 rounded-lg bg-red-600/80 border border-red-500/50 text-white hover:bg-red-500 hover:border-red-400 transition-all"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              Reset Roster
+            </motion.button>
+          )}
         </motion.div>
 
         {/* Roster Grid */}
@@ -516,11 +486,6 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 mt-20 border-t border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-8 text-center text-lol-light text-sm"></div>
-      </footer>
     </div>
   );
 }

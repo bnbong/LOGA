@@ -27,7 +27,7 @@ export default function GachaModal({
     if (isOpen && player) {
       // Check if player changed (for reroll case)
       const playerChanged = prevPlayerIdRef.current !== player.id;
-      
+
       if (playerChanged) {
         // Immediately set to loading to prevent showing new player info
         setStage("loading");
@@ -262,7 +262,7 @@ export default function GachaModal({
                 {/* Championship badge - positioned to overlap card edge */}
                 {displayPlayer.isWinner && displayPlayer.championshipLeague && (
                   <motion.div
-                    className="absolute -top-8 -right-8 z-30"
+                    className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 md:-top-8 md:-right-8 z-30"
                     initial={{ scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{
@@ -279,7 +279,7 @@ export default function GachaModal({
                       {/* Trophy badge */}
                       {displayPlayer.championshipLeague === "WORLDS" && (
                         <div
-                          className="relative bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 p-4 rounded-full shadow-2xl"
+                          className="relative bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 p-2 sm:p-3 md:p-4 rounded-full shadow-2xl"
                           style={{
                             boxShadow:
                               "0 0 30px rgba(250, 204, 21, 0.6), inset 0 2px 4px rgba(255,255,255,0.3)",
@@ -289,14 +289,14 @@ export default function GachaModal({
                           <img
                             src="/worlds.svg"
                             alt="Champion Trophy"
-                            className="h-10 w-10"
+                            className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10"
                           />
                         </div>
                       )}
 
                       {/* Championship info tooltip */}
                       <motion.div
-                        className="absolute top-full mt-2 right-0 bg-black/90 text-white px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap shadow-xl"
+                        className="absolute top-full mt-1 sm:mt-2 right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 bg-black/90 text-white px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-[9px] sm:text-[10px] md:text-xs font-bold text-center shadow-xl max-w-[120px] md:max-w-[180px] md:whitespace-nowrap"
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6 }}
