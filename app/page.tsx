@@ -300,14 +300,24 @@ export default function Home() {
               }}
               className="px-8 py-3 rounded-lg font-bold text-lg text-white bg-lol-blue hover:bg-lol-blue-dark transition-all transform hover:scale-105"
             >
-              🎯 Summon One Player
+              <img
+                src="/select.svg"
+                alt="Select All"
+                className="inline h-6 w-6 mr-2"
+              />{" "}
+              Select One Player
             </button>
 
             <button
               onClick={handleSummonAll}
               className="px-12 py-4 rounded-lg font-bold text-xl text-black bg-gradient-to-r from-lol-gold to-lol-gold-dark hover:from-lol-gold-dark hover:to-lol-gold transition-all gold-glow transform hover:scale-105"
             >
-              ⚡ Summon Full Team ⚡
+              <img
+                src="/select.svg"
+                alt="Select All"
+                className="inline h-6 w-6 mr-2"
+              />
+              Select All Players
             </button>
           </motion.div>
         )}

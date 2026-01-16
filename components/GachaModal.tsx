@@ -2,7 +2,7 @@
 
 import { Player } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getTranslations, getLanguage } from "@/lib/i18n";
 
 interface GachaModalProps {
@@ -19,15 +19,27 @@ export default function GachaModal({
   onCancel,
 }: GachaModalProps) {
   const [stage, setStage] = useState<"loading" | "reveal" | "show">("loading");
+  const [displayPlayer, setDisplayPlayer] = useState<Player | null>(null);
+  const prevPlayerIdRef = useRef<string | null>(null);
   const t = getTranslations(getLanguage());
 
   useEffect(() => {
     if (isOpen && player) {
-      setStage("loading");
+      // Check if player changed (for reroll case)
+      const playerChanged = prevPlayerIdRef.current !== player.id;
+      
+      if (playerChanged) {
+        // Immediately set to loading to prevent showing new player info
+        setStage("loading");
+        prevPlayerIdRef.current = player.id;
+      }
 
       // FIFA-style reveal sequence
-      const timer1 = setTimeout(() => setStage("reveal"), 800);
-      const timer2 = setTimeout(() => setStage("show"), 1600);
+      const timer1 = setTimeout(() => setStage("reveal"), 1600);
+      const timer2 = setTimeout(() => {
+        setStage("show");
+        setDisplayPlayer(player);
+      }, 2600);
 
       return () => {
         clearTimeout(timer1);
@@ -67,13 +79,7 @@ export default function GachaModal({
               {/* Circular Loading Container */}
               <div className="relative w-80 h-80 flex items-center justify-center">
                 {/* Outer golden frame */}
-                <div
-                  className="absolute inset-0 rounded-full border-4 border-gradient-to-r from-yellow-600 via-yellow-400 to-yellow-600 opacity-80"
-                  style={{
-                    borderImage:
-                      "linear-gradient(135deg, #855d20, #C89B3C, #855d20) 1",
-                  }}
-                />
+                <div className="absolute inset-0 rounded-full border-4 border-gradient-to-r from-yellow-600 via-yellow-400 to-yellow-600 opacity-80" />
 
                 {/* Glow effect */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-600/20 to-blue-500/20 blur-2xl" />
@@ -216,7 +222,7 @@ export default function GachaModal({
           )}
 
           {/* Show Stage - Full card reveal */}
-          {stage === "show" && (
+          {stage === "show" && displayPlayer && (
             <motion.div
               initial={{ scale: 0.8, opacity: 0, y: 50 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -254,7 +260,7 @@ export default function GachaModal({
               {/* Player Card Container with overflow visible for badge */}
               <div className="relative w-full aspect-[3/4]">
                 {/* Championship badge - positioned to overlap card edge */}
-                {player.isWinner && player.championshipLeague && (
+                {displayPlayer.isWinner && displayPlayer.championshipLeague && (
                   <motion.div
                     className="absolute -top-8 -right-8 z-30"
                     initial={{ scale: 0, rotate: -180 }}
@@ -271,20 +277,22 @@ export default function GachaModal({
                       <div className="absolute inset-0 bg-yellow-400 rounded-full blur-xl opacity-60 animate-pulse" />
 
                       {/* Trophy badge */}
-                      <div
-                        className="relative bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 p-4 rounded-full shadow-2xl"
-                        style={{
-                          boxShadow:
-                            "0 0 30px rgba(250, 204, 21, 0.6), inset 0 2px 4px rgba(255,255,255,0.3)",
-                        }}
-                      >
-                        {/* <div className="text-5xl">🏆</div> */}
-                        <img
-                          src="/worlds.svg"
-                          alt="Champion Trophy"
-                          className="h-10 w-10"
-                        />
-                      </div>
+                      {displayPlayer.championshipLeague === "WORLDS" && (
+                        <div
+                          className="relative bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 p-4 rounded-full shadow-2xl"
+                          style={{
+                            boxShadow:
+                              "0 0 30px rgba(250, 204, 21, 0.6), inset 0 2px 4px rgba(255,255,255,0.3)",
+                          }}
+                        >
+                          {/* <div className="text-5xl">🏆</div> */}
+                          <img
+                            src="/worlds.svg"
+                            alt="Champion Trophy"
+                            className="h-10 w-10"
+                          />
+                        </div>
+                      )}
 
                       {/* Championship info tooltip */}
                       <motion.div
@@ -297,8 +305,8 @@ export default function GachaModal({
                         }}
                       >
                         {t.championshipWinner(
-                          player.championshipYear || player.year,
-                          player.championshipLeague
+                          displayPlayer.championshipYear || displayPlayer.year,
+                          displayPlayer.championshipLeague
                         )}
                       </motion.div>
                     </div>
@@ -309,39 +317,40 @@ export default function GachaModal({
                 <div
                   className="w-full aspect-[3/4] rounded-lg overflow-hidden relative"
                   style={{
-                    background: `linear-gradient(135deg, ${player.teamColor}60 0%, rgba(30, 35, 40, 0.95) 100%)`,
-                    border: `3px solid ${player.teamColor}`,
-                    boxShadow: `0 0 40px ${player.teamColor}80`,
+                    background: `linear-gradient(135deg, ${displayPlayer.teamColor}60 0%, rgba(30, 35, 40, 0.95) 100%)`,
+                    border: `3px solid ${displayPlayer.teamColor}`,
+                    boxShadow: `0 0 40px ${displayPlayer.teamColor}80`,
                   }}
                 >
                   {/* Card content */}
+
                   <div className="absolute inset-0 p-6 flex flex-col justify-between">
                     {/* Top section */}
                     <motion.div
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
+                      transition={{ delay: 0.4 }}
                     >
                       <div className="text-lol-gold font-bold text-sm tracking-widest mb-2">
-                        {player.position}
+                        {displayPlayer.position}
                       </div>
                       <div className="text-white font-bold text-4xl mb-2 drop-shadow-lg">
-                        {player.name}
+                        {displayPlayer.name}
                       </div>
 
-                      {player.realName && (
+                      {displayPlayer.realName && (
                         <div className="text-lol-light text-base">
-                          {player.realName}
+                          {displayPlayer.realName}
                         </div>
                       )}
-                      {(player.championshipLeague === "WORLDS" ||
-                        player.championshipLeague === "MSI" ||
-                        (player.isWinner &&
-                          (player.region === "LCK" ||
-                            player.region === "LPL" ||
-                            player.region === "LEC"))) && (
+                      {(displayPlayer.championshipLeague === "WORLDS" ||
+                        displayPlayer.championshipLeague === "MSI" ||
+                        (displayPlayer.isWinner &&
+                          (displayPlayer.region === "LCK" ||
+                            displayPlayer.region === "LPL" ||
+                            displayPlayer.region === "LEC"))) && (
                         <div className="flex gap-2 mt-4 w-full p-[10px] bg-[#3a3636] opacity-50 rounded-lg items-center">
-                          {player.championshipLeague === "WORLDS" && (
+                          {displayPlayer.championshipLeague === "WORLDS" && (
                             <div>
                               <img
                                 src="/worlds.svg"
@@ -350,35 +359,38 @@ export default function GachaModal({
                               />
                             </div>
                           )}
-                          {player.region === "LCK" && player.isWinner && (
-                            <div>
-                              <img
-                                src="/lck.svg"
-                                alt="Champion Banner"
-                                className="h-10 w-10 mb-2"
-                              />
-                            </div>
-                          )}
-                          {player.region === "LPL" && player.isWinner && (
-                            <div>
-                              <img
-                                src="/lpl.svg"
-                                alt="Champion Banner"
-                                className="h-10 w-10 mb-2"
-                              />
-                            </div>
-                          )}
-                          {player.region === "LEC" && player.isWinner && (
-                            <div>
-                              <img
-                                src="/lec.webp"
-                                alt="Champion Banner"
-                                className="h-10 w-8 mb-2"
-                              />
-                            </div>
-                          )}
+                          {displayPlayer.region === "LCK" &&
+                            displayPlayer.isWinner && (
+                              <div>
+                                <img
+                                  src="/lck.svg"
+                                  alt="Champion Banner"
+                                  className="h-10 w-10 mb-2"
+                                />
+                              </div>
+                            )}
+                          {displayPlayer.region === "LPL" &&
+                            displayPlayer.isWinner && (
+                              <div>
+                                <img
+                                  src="/lpl.svg"
+                                  alt="Champion Banner"
+                                  className="h-10 w-10 mb-2"
+                                />
+                              </div>
+                            )}
+                          {displayPlayer.region === "LEC" &&
+                            displayPlayer.isWinner && (
+                              <div>
+                                <img
+                                  src="/lec.webp"
+                                  alt="Champion Banner"
+                                  className="h-10 w-8 mb-2"
+                                />
+                              </div>
+                            )}
 
-                          {player.championshipLeague === "MSI" && (
+                          {displayPlayer.championshipLeague === "MSI" && (
                             <div>
                               <img
                                 src="/msi.svg"
@@ -400,9 +412,9 @@ export default function GachaModal({
                     >
                       <div
                         className="text-6xl font-bold opacity-20"
-                        style={{ color: player.teamColor }}
+                        style={{ color: displayPlayer.teamColor }}
                       >
-                        {player.teamShort}
+                        {displayPlayer.teamShort}
                       </div>
                     </motion.div>
 
@@ -415,21 +427,21 @@ export default function GachaModal({
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-4xl">
-                          {getFlagEmoji(player.iso)}
+                          {getFlagEmoji(displayPlayer.iso)}
                         </span>
                         <span className="text-lol-light text-base">
-                          {player.nationality}
+                          {displayPlayer.nationality}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div
                           className="px-4 py-2 rounded text-white text-base font-bold"
-                          style={{ backgroundColor: player.teamColor }}
+                          style={{ backgroundColor: displayPlayer.teamColor }}
                         >
-                          {player.teamFull}
+                          {displayPlayer.teamFull}
                         </div>
                         <div className="text-lol-gold text-2xl font-bold">
-                          {player.year}
+                          {displayPlayer.year}
                         </div>
                       </div>
                     </motion.div>
@@ -445,7 +457,7 @@ export default function GachaModal({
                 className="flex gap-4 mt-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.1 }}
               >
                 <button
                   onClick={onCancel}
