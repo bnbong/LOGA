@@ -133,8 +133,8 @@ export async function getCommunityRosters(): Promise<CommunityRoster[]> {
   }
 }
 
-// 좋아요 추가
-export async function addLike(rosterId: string): Promise<void> {
+// 좋아요 토글
+export async function toggleLike(rosterId: string): Promise<void> {
   const userId = getUserId();
 
   try {
@@ -143,34 +143,69 @@ export async function addLike(rosterId: string): Promise<void> {
     const querySnapshot = await getDocs(rostersRef);
 
     let targetDocId: string | null = null;
+    let currentData: any = null;
     querySnapshot.forEach((docSnapshot) => {
       if (docSnapshot.data().id === rosterId) {
         targetDocId = docSnapshot.id;
+        currentData = docSnapshot.data();
       }
     });
 
-    if (targetDocId) {
+    if (targetDocId && currentData) {
       const rosterRef = doc(db, "rosters", targetDocId);
-      await updateDoc(rosterRef, {
-        likes: increment(1),
-        likedBy: arrayUnion(userId),
-      });
-      console.log("Like added to Firestore");
+      const likedBy = currentData.likedBy || [];
+      const hasLiked = likedBy.includes(userId);
+
+      if (hasLiked) {
+        // 좋아요 취소
+        await updateDoc(rosterRef, {
+          likes: increment(-1),
+          likedBy: likedBy.filter((id: string) => id !== userId),
+        });
+        console.log("Like removed from Firestore");
+      } else {
+        // 좋아요 추가
+        await updateDoc(rosterRef, {
+          likes: increment(1),
+          likedBy: arrayUnion(userId),
+        });
+        console.log("Like added to Firestore");
+      }
     }
   } catch (error) {
-    console.error("Error adding like to Firestore:", error);
+    console.error("Error toggling like in Firestore:", error);
     // Fallback to local storage
     const STORAGE_KEY = "lol-roster-community";
     const rosters = getFromLocalStorage();
     const roster = rosters.find((r) => r.id === rosterId);
 
-    if (roster && (!roster.likedBy || !roster.likedBy.includes(userId))) {
-      roster.likes += 1;
+    if (roster) {
       if (!roster.likedBy) roster.likedBy = [];
-      roster.likedBy.push(userId);
+      const hasLiked = roster.likedBy.includes(userId);
+
+      if (hasLiked) {
+        // 좋아요 취소
+        roster.likes = Math.max(0, roster.likes - 1);
+        roster.likedBy = roster.likedBy.filter((id) => id !== userId);
+      } else {
+        // 좋아요 추가
+        roster.likes += 1;
+        roster.likedBy.push(userId);
+      }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(rosters));
     }
   }
+}
+
+// 사용자가 좋아요를 눌렀는지 확인
+export function hasUserLiked(roster: CommunityRoster): boolean {
+  const userId = getUserId();
+  return roster.likedBy?.includes(userId) || false;
+}
+
+// 좋아요 추가 (기존 함수 - 하위 호환성을 위해 유지)
+export async function addLike(rosterId: string): Promise<void> {
+  await toggleLike(rosterId);
 }
 
 // 댓글 추가
@@ -193,7 +228,9 @@ export async function addComment(
 
     let targetDocId: string | null = null;
     querySnapshot.forEach((docSnapshot) => {
-      if (docSnapshot.data().id === rosterId) {
+      const data = docSnapshot.data();
+      console.log("Checking roster:", data.id, "against", rosterId);
+      if (data.id === rosterId) {
         targetDocId = docSnapshot.id;
       }
     });
@@ -203,7 +240,10 @@ export async function addComment(
       await updateDoc(rosterRef, {
         comments: arrayUnion(comment),
       });
-      console.log("Comment added to Firestore");
+      console.log("Comment added to Firestore for doc:", targetDocId);
+    } else {
+      console.error("Could not find roster with id:", rosterId);
+      throw new Error("Roster not found");
     }
   } catch (error) {
     console.error("Error adding comment to Firestore:", error);
@@ -215,6 +255,9 @@ export async function addComment(
     if (roster) {
       roster.comments.push(comment);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(rosters));
+      console.log("Comment saved to local storage");
+    } else {
+      console.error("Roster not found in local storage either");
     }
   }
 }

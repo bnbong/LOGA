@@ -10,43 +10,44 @@ export default function Navigation() {
   return (
     <>
       {/* Header */}
-      <header className="border-b border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 flex items-center justify-between">
-          <Link href="/">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 sm:gap-3 cursor-pointer"
-            >
-              <img
-                src="/lol.webp"
-                alt="LOL Logo"
-                className="h-6 w-6 sm:h-8 sm:w-8"
-              />
-              <div>
-                <h1 className="text-lg sm:text-2xl font-bold text-lol-gold">
-                  League of Gacha
-                </h1>
-              </div>
-            </motion.div>
-          </Link>
+      {pathname !== "/community" && (
+        <header className="border-b border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 flex items-center justify-between">
+            <Link href="/">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2 sm:gap-3 cursor-pointer"
+              >
+                <img
+                  src="/lol.webp"
+                  alt="LOL Logo"
+                  className="h-6 w-6 sm:h-8 sm:w-8"
+                />
+                <div>
+                  <h1 className="text-lg sm:text-2xl font-bold text-lol-gold">
+                    League of Gacha
+                  </h1>
+                </div>
+              </motion.div>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex gap-4">
-            <Link href="/my-page">
-              <button className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all">
-                My Stats
-              </button>
-            </Link>
-            <Link href="/community">
-              <button className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all">
-                Community
-              </button>
-            </Link>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex gap-4">
+              <Link href="/my-page">
+                <button className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all">
+                  My Stats
+                </button>
+              </Link>
+              <Link href="/community">
+                <button className="px-4 py-2 rounded-lg bg-lol-dark-lighter border border-lol-gold/30 text-lol-light hover:text-lol-gold hover:border-lol-gold/60 transition-all">
+                  Community
+                </button>
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
-
+        </header>
+      )}
       {/* Mobile Navigation Footer */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-lol-dark-accent/95 backdrop-blur-md border-t border-lol-gold/30 z-40">
         <div className="flex items-center justify-around px-4 py-3">
