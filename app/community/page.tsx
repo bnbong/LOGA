@@ -112,7 +112,11 @@ export default function CommunityPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-3 cursor-pointer"
             >
-              <img src="/log.png" alt="LOL Logo" className="h-8 w-8" />
+              <img
+                src="/log.png"
+                alt="League of Gacha Logo"
+                className="h-8 w-8"
+              />
               <div>
                 <h1 className="text-lg sm:text-2xl font-bold text-lol-gold">
                   League of Gacha

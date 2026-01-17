@@ -5,6 +5,7 @@ import Navigation from "@/components/Navigation";
 import AdBanner from "@/components/AdBanner";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import MicrosoftClarity from "@/components/MicrosoftClarity";
+import StructuredData from "@/components/StructuredData";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -107,6 +108,9 @@ export const metadata: Metadata = {
       "naver-site-verification": "f3039f0f5df4f43034c0f6719a3b67fd79584a68",
     },
   },
+  other: {
+    "google-site-verification": "8vf3whLt3aqJawoiSkCtfju1tLZxJX3WLrrO3LQWEbQ",
+  },
 };
 
 export default function RootLayout({
@@ -133,6 +137,17 @@ export default function RootLayout({
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         )}
         <MicrosoftClarity clarityId="v2pzezyev8" />
+        <StructuredData
+          type="WebApplication"
+          data={{
+            name: "League of Gacha",
+            description:
+              "Build your dream LoL roster with pro players from LCK, LPL, LEC",
+            url: "https://league-of-gacha.pages.dev",
+          }}
+        />
+        <StructuredData type="WebSite" data={{}} />
+        <StructuredData type="Organization" data={{}} />
         <Navigation />
         <main>{children}</main>
         {/* <AdBanner /> */}

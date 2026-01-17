@@ -13,9 +13,9 @@ export default function AboutPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-lol-dark-accent/60 border-2 border-lol-gold/30 rounded-lg p-8"
         >
-          <h2 className="text-3xl font-bold text-lol-gold mb-6">
+          <h1 className="text-3xl font-bold text-lol-gold mb-6">
             About League of Gacha
-          </h2>
+          </h1>
 
           <div className="space-y-6 text-lol-light">
             <section>

@@ -81,7 +81,45 @@ npm start
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
 - **Animations**: Framer Motion
-- **Deployment**: Vercel (권장)
+- **Backend**: Firebase (Community & Storage)
+- **Analytics**: Google Analytics 4, Microsoft Clarity
+- **Deployment**: Cloudflare Pages
+
+## 🔍 SEO Optimization
+
+이 프로젝트는 다음과 같은 SEO 최적화가 적용되어 있습니다:
+
+### 메타 데이터
+
+- ✅ 페이지별 고유한 title과 description
+- ✅ Open Graph 태그 (소셜 미디어 공유 최적화)
+- ✅ Twitter Card 지원
+- ✅ 다국어 키워드 (한글/영어)
+
+### 구조화된 데이터 (Schema.org)
+
+- ✅ WebApplication schema
+- ✅ WebSite schema with SearchAction
+- ✅ Organization schema
+
+### 기술적 SEO
+
+- ✅ Sitemap.xml 자동 생성
+- ✅ Robots.txt 설정 (Google, Naver 크롤러)
+- ✅ 의미론적 HTML (H1, H2 태그 적절히 사용)
+- ✅ 이미지 alt 속성
+- ✅ 모바일 반응형 디자인
+- ✅ 빠른 로딩 속도 (Next.js 최적화)
+
+### 검색엔진 제출
+
+프로젝트 배포 후 다음 사이트에 제출하세요:
+
+- [Google Search Console](https://search.google.com/search-console)
+- [Naver Search Advisor](https://searchadvisor.naver.com/)
+- [Bing Webmaster Tools](https://www.bing.com/webmasters)
+
+자세한 내용은 [ANALYTICS_SETUP.md](ANALYTICS_SETUP.md)를 참고하세요.
 
 ## 🎨 Design Features
 
