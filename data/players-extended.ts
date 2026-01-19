@@ -230,7 +230,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "theshy_2018",
     name: "TheShy",
-    realName: "Kang Seung-lok",
+    realName: "강승록",
     position: "TOP",
     year: 2018,
     teamShort: "IG",
@@ -330,7 +330,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "kingen_2022",
     name: "Kingen",
-    realName: "Hwang Seong-hoon",
+    realName: "황성훈",
     position: "TOP",
     year: 2022,
     teamShort: "DRX",
@@ -348,7 +348,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "smeb_2018",
     name: "Smeb",
-    realName: "Song Kyung-ho",
+    realName: "송경호",
     position: "TOP",
     year: 2018,
     teamShort: "KT",
@@ -554,7 +554,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "dandy_2014",
     name: "DanDy",
-    realName: "Choi In-kyu",
+    realName: "최인규",
     position: "JUNGLE",
     year: 2014,
     teamShort: "SSW",
@@ -570,7 +570,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "ambition_2017",
     name: "Ambition",
-    realName: "Kang Chan-yong",
+    realName: "강찬용",
     position: "JUNGLE",
     year: 2017,
     teamShort: "SSG",
@@ -684,7 +684,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "kanavi_2023",
     name: "Kanavi",
-    realName: "Seo Jin-hyeok",
+    realName: "서진혁",
     position: "JUNGLE",
     year: 2023,
     teamShort: "JDG",
@@ -764,7 +764,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "pyosik_2022",
     name: "Pyosik",
-    realName: "Hong Chang-hyeon",
+    realName: "홍창현",
     position: "JUNGLE",
     year: 2022,
     teamShort: "DRX",
@@ -782,7 +782,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "score_2018",
     name: "Score",
-    realName: "Go Dong-bin",
+    realName: "고동빈",
     position: "JUNGLE",
     year: 2018,
     teamShort: "KT",
@@ -852,7 +852,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "cuzz_2017",
     name: "Cuzz",
-    realName: "Moon Woo-chan",
+    realName: "문우찬",
     position: "JUNGLE",
     year: 2017,
     teamShort: "LZ",
@@ -868,7 +868,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "cuzz_2020",
     name: "Cuzz",
-    realName: "Moon Woo-chan",
+    realName: "문우찬",
     position: "JUNGLE",
     year: 2020,
     teamShort: "T1",
@@ -1014,7 +1014,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "dade_2014",
     name: "dade",
-    realName: "Bae Eo-jin",
+    realName: "배어진",
     position: "MID",
     year: 2014,
     teamShort: "SSW",
@@ -1030,7 +1030,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "crown_2017",
     name: "Crown",
-    realName: "Lee Min-ho",
+    realName: "이민호",
     position: "MID",
     year: 2017,
     teamShort: "SSG",
@@ -1048,7 +1048,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "kuro_2016",
     name: "Kuro",
-    realName: "Lee Seo-haeng",
+    realName: "이서행",
     position: "MID",
     year: 2016,
     teamShort: "ROX",
@@ -1114,7 +1114,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "rookie_2018",
     name: "Rookie",
-    realName: "Song Eui-jin",
+    realName: "송의진",
     position: "MID",
     year: 2018,
     teamShort: "IG",
@@ -1130,7 +1130,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "doinb_2019",
     name: "Doinb",
-    realName: "Kim Tae-sang",
+    realName: "김태상",
     position: "MID",
     year: 2019,
     teamShort: "FPX",
@@ -1208,7 +1208,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "scout_2021",
     name: "Scout",
-    realName: "Lee Ye-chan",
+    realName: "이예찬",
     position: "MID",
     year: 2021,
     teamShort: "EDG",
@@ -1226,7 +1226,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "zeka_2022",
     name: "Zeka",
-    realName: "Kim Geon-woo",
+    realName: "김건우",
     position: "MID",
     year: 2022,
     teamShort: "DRX",
@@ -1244,7 +1244,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "ucal_2018",
     name: "Ucal",
-    realName: "Kim Seong-won",
+    realName: "손우현",
     position: "MID",
     year: 2018,
     teamShort: "KT",
@@ -1330,7 +1330,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "bdd_2017",
     name: "BDD",
-    realName: "Kim Dae-ho",
+    realName: "곽보성",
     position: "MID",
     year: 2017,
     teamShort: "LZ",
@@ -1346,7 +1346,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "bdd_2018",
     name: "BDD",
-    realName: "Kim Dae-ho",
+    realName: "곽보성",
     position: "MID",
     year: 2018,
     teamShort: "KZ",
@@ -1485,7 +1485,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "imp_2014",
     name: "imp",
-    realName: "Gu Seung-bin",
+    realName: "구승빈",
     position: "ADC",
     year: 2014,
     teamShort: "SSW",
@@ -1519,7 +1519,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "pray_2016",
     name: "PraY",
-    realName: "Kim Jong-in",
+    realName: "김종인",
     position: "ADC",
     year: 2016,
     teamShort: "ROX",
@@ -1533,7 +1533,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "peyz_2023",
     name: "Peyz",
-    realName: "Kim Su-hwan",
+    realName: "김수환",
     position: "ADC",
     year: 2023,
     teamShort: "GEN",
@@ -1549,7 +1549,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "peyz_2024",
     name: "Peyz",
-    realName: "Kim Su-hwan",
+    realName: "김수환",
     position: "ADC",
     year: 2024,
     teamShort: "GEN",
@@ -1679,7 +1679,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "viper_2021",
     name: "Viper",
-    realName: "Park Do-hyeon",
+    realName: "박도현",
     position: "ADC",
     year: 2021,
     teamShort: "EDG",
@@ -1697,7 +1697,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "deft_2022",
     name: "Deft",
-    realName: "Kim Hyuk-kyu",
+    realName: "김혁규",
     position: "ADC",
     year: 2022,
     teamShort: "DRX",
@@ -1713,7 +1713,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "deft_2018",
     name: "Deft",
-    realName: "Kim Hyuk-kyu",
+    realName: "김혁규",
     position: "ADC",
     year: 2018,
     teamShort: "KT",
@@ -1815,7 +1815,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "pray_2017",
     name: "PraY",
-    realName: "Kim Jong-in",
+    realName: "김종인",
     position: "ADC",
     year: 2017,
     teamShort: "LZ",
@@ -1831,7 +1831,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "pray_2018",
     name: "PraY",
-    realName: "Kim Jong-in",
+    realName: "김종인",
     position: "ADC",
     year: 2018,
     teamShort: "KZ",
@@ -1988,7 +1988,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "mata_2014",
     name: "Mata",
-    realName: "Cho Se-hyeong",
+    realName: "조세형",
     position: "SUPPORT",
     year: 2014,
     teamShort: "SSW",
@@ -2022,7 +2022,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "gorilla_2016",
     name: "GorillA",
-    realName: "Kang Beom-hyeon",
+    realName: "강범현",
     position: "SUPPORT",
     year: 2016,
     teamShort: "ROX",
@@ -2036,7 +2036,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "delight_2023",
     name: "Delight",
-    realName: "Yoo Hwan-joong",
+    realName: "유환중",
     position: "SUPPORT",
     year: 2023,
     teamShort: "GEN",
@@ -2052,7 +2052,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "lehends_2024",
     name: "Lehends",
-    realName: "Son Si-woo",
+    realName: "손시우",
     position: "SUPPORT",
     year: 2024,
     teamShort: "GEN",
@@ -2268,7 +2268,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "gorilla_2017",
     name: "GorillA",
-    realName: "Kang Beom-hyeon",
+    realName: "강범현",
     position: "SUPPORT",
     year: 2017,
     teamShort: "LZ",
@@ -2284,7 +2284,7 @@ export const EXTENDED_PLAYERS: Player[] = [
   {
     id: "gorilla_2018",
     name: "GorillA",
-    realName: "Kang Beom-hyeon",
+    realName: "강범현",
     position: "SUPPORT",
     year: 2018,
     teamShort: "KZ",
