@@ -83,7 +83,7 @@ export default function GachaModal({
             setStage("show");
             setDisplayPlayer(player);
           }
-        }, 2600); // 2600 → 3200 (600ms 증가)
+        }, 2650); // 1600 + 950(animation) + 100(buffer) = 2650ms
 
         return () => {
           clearTimeout(timer1);
@@ -402,7 +402,7 @@ export default function GachaModal({
                   className="relative w-full h-full"
                   style={{ transformStyle: "preserve-3d" }}
                   initial={{ rotateY: 0 }}
-                  animate={{ rotateY: 400 }}
+                  animate={{ rotateY: 360 }}
                   transition={{ duration: 0.95, ease: "easeInOut" }}
                 >
                   {/* Card Back */}
