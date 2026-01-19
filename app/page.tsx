@@ -49,7 +49,8 @@ import Footer from "@/components/Footer";
 const POSITIONS: Position[] = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
 export default function Home() {
-  const { language, t } = useLanguage();
+  const { language, t, showWorldsAnimation, setShowWorldsAnimation } =
+    useLanguage();
   const [roster, setRoster] = useState<UserRoster>({
     id: "",
     createdAt: Date.now(),
@@ -302,6 +303,36 @@ export default function Home() {
             <p className="text-lol-light text-lg max-w-2xl mx-auto">
               {t("mainDescription")}
             </p>
+
+            {/* Worlds Animation Toggle */}
+            <motion.div
+              className="mt-6 flex items-center justify-center gap-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <label className="flex items-center gap-3 cursor-pointer bg-lol-dark-lighter/50 px-4 py-3 rounded-lg border border-lol-gold/30 hover:border-lol-gold/60 transition-all">
+                <div className="flex flex-col items-start">
+                  <span className="text-white font-bold text-sm">
+                    {t("worldsAnimation")}
+                  </span>
+                  <span className="text-lol-light text-xs">
+                    {t("worldsAnimationDesc")}
+                  </span>
+                </div>
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={showWorldsAnimation}
+                    onChange={(e) => setShowWorldsAnimation(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:bg-lol-gold transition-colors"></div>
+                  <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+                </div>
+              </label>
+            </motion.div>
+
             {isRosterComplete && (
               <motion.button
                 onClick={handleReset}

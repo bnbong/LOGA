@@ -23,9 +23,11 @@ export default function GachaModal({
   >("loading");
   const [displayPlayer, setDisplayPlayer] = useState<Player | null>(null);
   const prevPlayerIdRef = useRef<string | null>(null);
-  const { t } = useLanguage();
+  const { t, showWorldsAnimation } = useLanguage();
   const isWorldsWinner =
     player?.isWinner && player?.championshipLeague === "WORLDS";
+  // Use FIFA-style animation only if enabled
+  const useFifaAnimation = showWorldsAnimation && isWorldsWinner;
 
   useEffect(() => {
     if (isOpen && player) {
@@ -40,7 +42,7 @@ export default function GachaModal({
       }
 
       // Special FIFA-style reveal sequence for Worlds winners (1.6x slower for better viewing)
-      if (isWorldsWinner) {
+      if (useFifaAnimation) {
         const timer1 = setTimeout(() => {
           if (prevPlayerIdRef.current === player.id) {
             setStage("nationality");
@@ -89,7 +91,7 @@ export default function GachaModal({
         };
       }
     }
-  }, [isOpen, player, isWorldsWinner]);
+  }, [isOpen, player, useFifaAnimation]);
 
   if (!isOpen || !player) return null;
 
@@ -390,36 +392,59 @@ export default function GachaModal({
             )}
 
             {/* Reveal Stage - Card flip */}
-            {stage === "reveal" && (
+            {stage === "reveal" && player && (
               <motion.div
                 key="reveal"
-                className="perspective-1000 preserve-3d"
-                initial={{ rotateY: 0 }}
-                animate={{ rotateY: 360 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
+                className="relative w-full aspect-[3/4]"
+                style={{ perspective: "1000px" }}
               >
-                <div
-                  className="w-full aspect-[3/4] rounded-lg flex items-center justify-center backface-hidden"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #C89B3C 0%, #937341 100%)",
-                    boxShadow: "0 0 40px rgba(200, 155, 60, 0.6)",
-                  }}
+                <motion.div
+                  className="relative w-full h-full"
+                  style={{ transformStyle: "preserve-3d" }}
+                  initial={{ rotateY: 0 }}
+                  animate={{ rotateY: 400 }}
+                  transition={{ duration: 0.95, ease: "easeInOut" }}
                 >
-                  {/* League icon on card back */}
-                  {player.region && (
-                    <motion.img
-                      src={`/${player.region.toLowerCase()}.${
-                        player.region === "LEC" ? "webp" : "svg"
-                      }`}
-                      alt={`${player.region} Logo`}
-                      className="w-32 h-32 opacity-80"
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 0.8, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
-                </div>
+                  {/* Card Back */}
+                  <div
+                    className="absolute inset-0 w-full h-full rounded-lg flex items-center justify-center"
+                    style={{
+                      backfaceVisibility: "hidden",
+                      background:
+                        "linear-gradient(135deg, #C89B3C 0%, #937341 100%)",
+                      boxShadow: "0 0 40px rgba(200, 155, 60, 0.6)",
+                    }}
+                  >
+                    {/* League icon on card back */}
+                    {player.region && (
+                      <motion.img
+                        src={`/${player.region.toLowerCase()}.${
+                          player.region === "LEC" ? "webp" : "svg"
+                        }`}
+                        alt={`${player.region} Logo`}
+                        className="w-32 h-32 opacity-80"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 0.8, scale: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Card Front */}
+                  <div
+                    className="absolute inset-0 w-full h-full rounded-lg flex items-center justify-center"
+                    style={{
+                      backfaceVisibility: "hidden",
+                      transform: "rotateY(180deg)",
+                      background:
+                        "linear-gradient(135deg, rgba(30, 35, 40, 0.95) 0%, rgba(20, 25, 30, 0.98) 100%)",
+                      border: "3px solid #3b82f6",
+                      boxShadow: "0 0 40px rgba(59, 130, 246, 0.6)",
+                    }}
+                  >
+                    <div className="text-6xl opacity-30 text-blue-500">?</div>
+                  </div>
+                </motion.div>
               </motion.div>
             )}
 
