@@ -60,7 +60,7 @@ export default function GachaMultiModal({
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -178,13 +178,13 @@ export default function GachaMultiModal({
             {stage === "reveal" && displayPlayers.size > 0 && (
               <motion.div
                 key={`reveal-${prevPlayersKeyRef.current}`}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center max-h-[85vh] overflow-y-auto"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
               >
                 {/* Cards Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6 w-full">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 w-full px-1 sm:px-0">
                   {positionOrder.map((position, index) => {
                     const player = displayPlayers.get(position);
                     if (!player) return null;
@@ -203,24 +203,24 @@ export default function GachaMultiModal({
                         className="col-span-1"
                       >
                         <div
-                          className="w-full aspect-[3/4] rounded-lg overflow-hidden relative"
+                          className="w-full aspect-[3/4.5] sm:aspect-[3/4] rounded-md sm:rounded-lg overflow-hidden relative"
                           style={{
                             background: `linear-gradient(135deg, ${player.teamColor}60 0%, rgba(30, 35, 40, 0.95) 100%)`,
                             border: `2px solid ${player.teamColor}`,
                             boxShadow: `0 0 20px ${player.teamColor}80`,
                           }}
                         >
-                          <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between">
+                          <div className="absolute inset-0 p-2 sm:p-3 md:p-4 flex flex-col justify-between">
                             {/* Top section */}
                             <div>
-                              <div className="text-lol-gold font-bold text-xs sm:text-sm tracking-widest mb-1">
+                              <div className="text-lol-gold font-bold text-[10px] sm:text-xs md:text-sm tracking-widest mb-0.5 sm:mb-1">
                                 {player.position}
                               </div>
-                              <div className="text-white font-bold text-xl sm:text-2xl mb-1 drop-shadow-lg">
+                              <div className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl mb-0.5 sm:mb-1 drop-shadow-lg">
                                 {player.name}
                               </div>
                               {player.realName && (
-                                <div className="text-lol-light text-xs sm:text-sm">
+                                <div className="text-lol-light text-[10px] sm:text-xs md:text-sm">
                                   {player.realName}
                                 </div>
                               )}
