@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="mt-20 border-t border-lol-gold/30 bg-lol-dark-accent/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Links Section */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
           {/* About */}
           <div>
             <h3 className="text-lol-gold font-bold mb-3">About</h3>
@@ -88,12 +88,12 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-          <div>
+          {/* <div>
             <h3 className="text-lol-gold font-bold mb-3">Support</h3>
             <ul className="space-y-2 text-lol-light text-sm">
               <li>
                 <a
-                  href="https://discord.gg/SM2sPpmE"
+                  href="https://discord.gg/3rmjGgDmQc"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-lol-gold transition-colors"
@@ -102,7 +102,7 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         {/* Divider */}
